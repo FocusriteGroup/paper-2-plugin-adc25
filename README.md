@@ -13,9 +13,14 @@ Please also follow the instructions for your platfrom in section 1 to install th
 - [JUCE](https://juce.com/download/)
 - [Reaper](https://www.reaper.fm/download.php)
 
-For MacOS users: XCode (this can be downloaded from the App Store)
+### For MacOS users 
 
-For Windows user: Visual Studio 2019 / [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) + MSVC
+XCode (this can be downloaded from the App Store)
+
+### For Windows users 
+
+Visual Studio 2019 / [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) + MSVC
+
 When running the installer, choose to install the C/C++ development tools
 
 ### 1. Notebook
