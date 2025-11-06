@@ -8,11 +8,10 @@ Due to the possibility of issues with Wifi at the conference we ask that, ahead 
 
 Please also follow the instructions for your platfrom in section 1 to install the Python dependencies.
 
-
-[Python3](https://www.python.org/downloads/)
-[CMake](https://cmake.org/download/)
-[JUCE](https://juce.com/download/)
-[Reaper](https://www.reaper.fm/download.php)
+- [Python3](https://www.python.org/downloads/)
+- [CMake](https://cmake.org/download/)
+- [JUCE](https://juce.com/download/)
+- [Reaper](https://www.reaper.fm/download.php)
 
 For MacOS users: XCode (this can be downloaded from the App Store)
 
