@@ -6,7 +6,7 @@ Audio Developer Conference 2025, Bristol
 
 Due to the possibility of issues with Wifi at the conference we ask that, ahead of the workshop, you please have the following already installed. 
 
-Please also follow the instructions for your platfrom in section 1 to install the Python dependencies.
+Please also follow the instructions for your platform in section 1 to install the Python dependencies.
 
 - [Python3](https://www.python.org/downloads/)
 - [CMake](https://cmake.org/download/)
