@@ -46,7 +46,11 @@ private:
     // access the processor object that created it.
     MVMFilterAudioProcessor& audioProcessor;
     juce::AudioProcessorValueTreeState& m_valueTreeState;
-
+    
+    juce::ComboBox m_sourceChoice;
+    juce::Label m_sourceChoiceLabel;
+    juce::AudioProcessorValueTreeState::ComboBoxAttachment m_comboBoxAttachement;
+    
     using SliderAttachements = std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, MVMFilterAudioProcessor::NumberOfFilters>;
     std::array<juce::Slider, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicGainSliders;
     std::array<juce::Label, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicGainLabels;

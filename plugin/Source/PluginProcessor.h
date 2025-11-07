@@ -13,6 +13,7 @@
 #include <array>
 #include <atomic>
 #include <memory>
+#include <random>
 
 #include "../../source/MVMFilter.h"
 
@@ -63,10 +64,21 @@ public:
     void handleNoteOn (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     
+    static constexpr const char * SourceID = "sourceID";
+
+    static constexpr const char * SourceImpulse = "Impulse";
+    static constexpr const char * SourceRandomImpulse = "Random impulse";
+
     static constexpr const char * HarmonicsGroupID = "HarmonicsGroupID";
     static constexpr const char * HarmonicGainID = "HarmonicGainID";
     static constexpr const char * HarmonicDecayID = "HarmonicDecayID";
 
+    enum Source
+    {
+        Impulse=1,
+        RandomImpulse
+    };
+    
     static constexpr int NumberOfFilters {10};
 
 private:
@@ -90,6 +102,15 @@ private:
     std::array<std::atomic<bool>, 2> m_ping{false};
     
     juce::MidiKeyboardState m_keyboardState;
+
+    std::mt19937 m_genValue;
+    std::bernoulli_distribution m_value{0.01}; // Biased towards generating 0.0 to avoid saturating the filters
+
+    juce::AudioParameterChoice * m_sourceParameter;
+    Source m_source{Source::Impulse};
+    double getNextSourceSample(int channel);
+    double impulse(int channel);
+    double randomImpulse(int channel);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MVMFilterAudioProcessor)
 };

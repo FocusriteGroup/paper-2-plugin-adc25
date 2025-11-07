@@ -16,8 +16,16 @@ MVMFilterAudioProcessorEditor::MVMFilterAudioProcessorEditor (MVMFilterAudioProc
     : AudioProcessorEditor (&p)
     , audioProcessor (p)
     , m_valueTreeState(v)
+    , m_comboBoxAttachement(v, MVMFilterAudioProcessor::SourceID, m_sourceChoice)
     , m_keyboardComponent (keyboardState, juce::MidiKeyboardComponent::horizontalKeyboard)
 {
+    addAndMakeVisible(&m_sourceChoice);
+    m_sourceChoice.addItem(MVMFilterAudioProcessor::SourceImpulse, MVMFilterAudioProcessor::Source::Impulse);
+    m_sourceChoice.addItem(MVMFilterAudioProcessor::SourceRandomImpulse, MVMFilterAudioProcessor::Source::RandomImpulse);
+    m_sourceChoice.setSelectedId(MVMFilterAudioProcessor::Source::Impulse);
+    m_sourceChoiceLabel.setText("Source", juce::dontSendNotification);
+    m_sourceChoiceLabel.attachToComponent(&m_sourceChoice, true);
+    
     for (int i=0; i<MVMFilterAudioProcessor::NumberOfFilters; i++)
     {
         auto indexString = "_" + std::to_string(i);
@@ -65,6 +73,8 @@ void MVMFilterAudioProcessorEditor::resized()
     auto footerBounds = localBounds.removeFromBottom(FooterHeight);
     m_keyboardComponent.setBounds(footerBounds);
         
+    auto headerBounds = localBounds.removeFromTop(HeaderHeight);
+    
     juce::FlexBox sliderGainsFlexBox;
     sliderGainsFlexBox.flexDirection = juce::FlexBox::Direction::row;
     sliderGainsFlexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
@@ -92,5 +102,13 @@ void MVMFilterAudioProcessorEditor::resized()
     localBounds.removeFromLeft(MarginWidth);
     localBounds.removeFromRight(MarginWidth);
     sliderDecaysFlexBox.performLayout(localBounds);
+    
+    juce::FlexBox headerFlexBox;
+    headerFlexBox.flexDirection = juce::FlexBox::Direction::row;
+    headerFlexBox.justifyContent = juce::FlexBox::JustifyContent::spaceAround;
+    headerFlexBox.alignItems = juce::FlexBox::AlignItems::center;
+    headerFlexBox.flexWrap = juce::FlexBox::Wrap::wrap;
+    headerFlexBox.items.add(juce::FlexItem(m_sourceChoice).withWidth(ComponentWidth).withHeight(ComponentHeight));
+    headerFlexBox.performLayout(headerBounds);
 }
 

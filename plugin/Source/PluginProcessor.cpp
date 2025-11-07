@@ -39,7 +39,11 @@ MVMFilterAudioProcessor::MVMFilterAudioProcessor()
                                                                          nullptr,
                                                                          juce::Identifier ("MVMFilter"),
                                                                          juce::AudioProcessorValueTreeState::ParameterLayout {
+        std::make_unique<juce::AudioParameterChoice>(juce::ParameterID {SourceID, 1},
+                                                            "Source", juce::StringArray(SourceImpulse, SourceRandomImpulse), Source::Impulse),
         std::move(harmonicsParameterGroup)});
+
+    m_sourceParameter = dynamic_cast<juce::AudioParameterChoice *> (m_parameters->getParameter (SourceID));
 
     for(int i=0; i<NumberOfFilters; i++)
     {
@@ -200,7 +204,7 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         filter[1].set(m_cutoffFrequency*Harmonics[filterIndex], m_harmonicDecays[filterIndex]->get());
     }
 
-    double inputSample = 0.0;
+    m_source = static_cast<Source>(m_sourceParameter->getIndex()+1);
 
     for (int channel = 0; channel < totalNumOutputChannels; ++channel)
     {
@@ -208,15 +212,7 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
         for (int sampleIndex = 0; sampleIndex < buffer.getNumSamples(); sampleIndex++)
         {
-            if(m_ping[channel])
-            {
-                inputSample = 1.0;
-                m_ping[channel] = false;
-            }
-            else
-            {
-                inputSample = 0.0;
-            }
+            double inputSample = getNextSourceSample(channel);
 
             for(size_t filterIndex=0; filterIndex < m_filters.size(); filterIndex++)
             {
@@ -282,4 +278,42 @@ void MVMFilterAudioProcessor::handleNoteOff (juce::MidiKeyboardState*, int midiC
     {
         pingChannel = false;
     }
+}
+
+double MVMFilterAudioProcessor::getNextSourceSample(int channel)
+{
+    switch(m_source)
+    {
+        case Source::Impulse:
+           return impulse(channel);
+        case Source::RandomImpulse:
+           return randomImpulse(channel);
+    }
+
+    return 0.0;
+}
+
+double MVMFilterAudioProcessor::impulse(int channel)
+{
+    static bool start = false;
+
+    if(m_ping[channel])
+    {
+        start = true;
+        m_ping[channel] = false;
+    }
+
+    auto output = start ? 1.0 : 0.0;
+
+    if(start)
+    {
+        start = false;
+    }
+
+    return output;
+}
+
+double MVMFilterAudioProcessor::randomImpulse(int channel)
+{
+    return static_cast<double>(m_ping[channel] * m_value(m_genValue));
 }
