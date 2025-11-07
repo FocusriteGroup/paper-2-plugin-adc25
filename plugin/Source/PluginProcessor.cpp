@@ -177,9 +177,16 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
         
-    m_filter[0].set(m_cutoffFrequency, m_tau->get());
-    m_filter[1].set(m_cutoffFrequency, m_tau->get());
-        
+    for(size_t filterIndex=0; filterIndex < m_filters.size(); filterIndex++)
+    {
+        auto& filter = m_filters[filterIndex];
+
+        filter[0].set(m_cutoffFrequency*Harmonics[filterIndex], m_tau->get()*HarmonicDecays[filterIndex]);
+        filter[1].set(m_cutoffFrequency*Harmonics[filterIndex], m_tau->get()*HarmonicDecays[filterIndex]);
+    }
+
+    double inputSample = 0.0;
+
     for (int channel = 0; channel < totalNumOutputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
@@ -188,13 +195,20 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         {
             if(m_ping[channel])
             {
-                channelData[sampleIndex] = m_filter[channel].process(1.0f);
+                inputSample = 1.0;
                 m_ping[channel] = false;
             }
             else
             {
-                channelData[sampleIndex] = m_filter[channel].process(0.0f);
+                inputSample = 0.0;
             }
+
+            for(auto &filter : m_filters)
+            {
+                channelData[sampleIndex] += filter[channel].process(inputSample);
+            }
+
+            channelData[sampleIndex] /= NumberOfFilters;
         }
     }
 }
@@ -253,4 +267,3 @@ void MVMFilterAudioProcessor::handleNoteOff (juce::MidiKeyboardState*, int midiC
         pingChannel = false;
     }
 }
-

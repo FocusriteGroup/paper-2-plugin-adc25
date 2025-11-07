@@ -68,14 +68,19 @@ public:
     
 private:
     //==============================================================================
-    
     static constexpr double InitCutoffFrequency{1000.0};
-    static constexpr double InitTau{0.1};
-    static constexpr double InitSampleRate{48000};
-    
+    static constexpr double InitTau{0.01};
+    static constexpr double InitSampleRate{48000.0};
+
+    static constexpr int NumberOfFilters {10};
+    static constexpr std::array<double, NumberOfFilters> Harmonics = {1, 3, 5, 7, 9 , 11, 13, 15, 17, 19};
+    static constexpr std::array<double, NumberOfFilters> HarmonicDecays = {1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.025, 0.002, 0.001};
+
     juce::AudioParameterFloat * m_tau;
     float m_cutoffFrequency{1000.0f};
-    std::array<MVMFilter, 2> m_filter;
+
+    using StereoFilter =  std::array<MVMFilter, 2>;
+    std::array<StereoFilter, NumberOfFilters> m_filters;
     std::unique_ptr<juce::AudioProcessorValueTreeState> m_parameters;
     std::array<std::atomic<bool>, 2> m_ping{false};
     
