@@ -65,3 +65,9 @@ When running the installer, choose to install the C/C++ development tools
   
   # Then copy the provided link into your browser
 ```
+
+If you encounter an error message about a maximum path length limitation when running `pip install -r requirements.txt`, please try running this in the PowerShell environment to enable long paths support:
+
+```PowerShell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
