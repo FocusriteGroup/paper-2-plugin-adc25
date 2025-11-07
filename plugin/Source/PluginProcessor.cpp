@@ -10,6 +10,8 @@
 
 #include "PluginEditor.h"
 
+#include <string>
+
 //==============================================================================
 MVMFilterAudioProcessor::MVMFilterAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -23,15 +25,28 @@ MVMFilterAudioProcessor::MVMFilterAudioProcessor()
                        )
 #endif
 {
+
+    auto harmonicsParameterGroup = std::make_unique<juce::AudioProcessorParameterGroup>(HarmonicsGroupID, "Harmonic group", "-");
+
+    for(int i=0; i<NumberOfFilters; i++)
+    {
+        auto indexString = "_" + std::to_string(i);
+        harmonicsParameterGroup->addChild(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{HarmonicGainID + indexString, 1}, "Harmonic gain " + indexString, juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+        harmonicsParameterGroup->addChild(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{HarmonicDecayID + indexString, 1}, "Harmonic decay " + indexString, juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+    }
+
     m_parameters = std::make_unique<juce::AudioProcessorValueTreeState> (*this,
                                                                          nullptr,
                                                                          juce::Identifier ("MVMFilter"),
                                                                          juce::AudioProcessorValueTreeState::ParameterLayout {
-        std::make_unique<juce::AudioParameterFloat>(juce::ParameterID {TauID, 1},
-                                                    "Tau",
-                                                    juce::NormalisableRange<float> (0.0f, 1.0f), static_cast<float>(InitTau))});
-    
-    m_tau = dynamic_cast<juce::AudioParameterFloat *> (m_parameters->getParameter (TauID));
+        std::move(harmonicsParameterGroup)});
+
+    for(int i=0; i<NumberOfFilters; i++)
+    {
+        auto indexString = "_" + std::to_string(i);
+        m_harmonicGains[i] = dynamic_cast<juce::AudioParameterFloat *> (m_parameters->getParameter (HarmonicGainID + indexString));
+        m_harmonicDecays[i] = dynamic_cast<juce::AudioParameterFloat *> (m_parameters->getParameter (HarmonicDecayID + indexString));
+    }
 
     m_keyboardState.addListener(this);
 }
@@ -181,8 +196,8 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     {
         auto& filter = m_filters[filterIndex];
 
-        filter[0].set(m_cutoffFrequency*Harmonics[filterIndex], m_tau->get()*HarmonicDecays[filterIndex]);
-        filter[1].set(m_cutoffFrequency*Harmonics[filterIndex], m_tau->get()*HarmonicDecays[filterIndex]);
+        filter[0].set(m_cutoffFrequency*Harmonics[filterIndex], m_harmonicDecays[filterIndex]->get());
+        filter[1].set(m_cutoffFrequency*Harmonics[filterIndex], m_harmonicDecays[filterIndex]->get());
     }
 
     double inputSample = 0.0;
@@ -203,9 +218,10 @@ void MVMFilterAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
                 inputSample = 0.0;
             }
 
-            for(auto &filter : m_filters)
+            for(size_t filterIndex=0; filterIndex < m_filters.size(); filterIndex++)
             {
-                channelData[sampleIndex] += filter[channel].process(inputSample);
+                auto& filter = m_filters[filterIndex];
+                channelData[sampleIndex] += m_harmonicGains[filterIndex]->get() * filter[channel].process(inputSample);
             }
 
             channelData[sampleIndex] /= NumberOfFilters;

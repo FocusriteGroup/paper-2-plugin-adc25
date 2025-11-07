@@ -11,6 +11,9 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+#include <array>
+#include <memory>
+
 //==============================================================================
 /**
 */
@@ -31,14 +34,27 @@ private:
     static constexpr int ComponentWidth = 200;
     static constexpr int ComponentHeight = 40;
     
+    static constexpr int SliderWidth = 100;
+    static constexpr int SliderHeight = 200;
+
+    static constexpr int FooterHeight = 100;
+    static constexpr int HeaderHeight = 100;
+
+    static constexpr int MarginWidth = 20;
+
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     MVMFilterAudioProcessor& audioProcessor;
     juce::AudioProcessorValueTreeState& m_valueTreeState;
-    
-    juce::Slider m_tauSlider;
-    juce::Label m_tauLabel;
-    juce::AudioProcessorValueTreeState::SliderAttachment m_sliderAttachement;
+
+    using SliderAttachements = std::array<std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment>, MVMFilterAudioProcessor::NumberOfFilters>;
+    std::array<juce::Slider, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicGainSliders;
+    std::array<juce::Label, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicGainLabels;
+    SliderAttachements m_harmonicGainSliderAttachements;
+
+    std::array<juce::Slider, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicDecaySliders;
+    std::array<juce::Label, MVMFilterAudioProcessor::NumberOfFilters> m_harmonicDecayLabels;
+    SliderAttachements m_harmonicDecaySliderAttachements;
 
     juce::MidiKeyboardComponent m_keyboardComponent;
     

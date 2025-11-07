@@ -63,20 +63,25 @@ public:
     void handleNoteOn (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     void handleNoteOff (juce::MidiKeyboardState*, int midiChannel, int midiNoteNumber, float velocity) override;
     
-    static constexpr const char * TauID = "tauID";
-    static constexpr const char * FsID = "fsID";
-    
+    static constexpr const char * HarmonicsGroupID = "HarmonicsGroupID";
+    static constexpr const char * HarmonicGainID = "HarmonicGainID";
+    static constexpr const char * HarmonicDecayID = "HarmonicDecayID";
+
+    static constexpr int NumberOfFilters {10};
+
 private:
     //==============================================================================
     static constexpr double InitCutoffFrequency{1000.0};
     static constexpr double InitTau{0.01};
     static constexpr double InitSampleRate{48000.0};
 
-    static constexpr int NumberOfFilters {10};
+
     static constexpr std::array<double, NumberOfFilters> Harmonics = {1, 3, 5, 7, 9 , 11, 13, 15, 17, 19};
     static constexpr std::array<double, NumberOfFilters> HarmonicDecays = {1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.025, 0.002, 0.001};
 
-    juce::AudioParameterFloat * m_tau;
+    std::array<juce::AudioParameterFloat*, NumberOfFilters> m_harmonicGains;
+    std::array<juce::AudioParameterFloat*, NumberOfFilters> m_harmonicDecays;
+
     float m_cutoffFrequency{1000.0f};
 
     using StereoFilter =  std::array<MVMFilter, 2>;
