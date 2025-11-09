@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        const e=["#56B4E9","#E69F00","#CC79A7","#009E73","#F0E442","#0072B2","#D55E00"];class t{constructor(e,t,a,r){this.x=e,this.y=t,this.w=a,this.h=r}hDivide(e,a,r=0){let s=this.w/e,i=this.h,l=this.x,o=this.y;return new t(l+s*a+s*r/e,o+i*r/2,s*(1-r),i*(1-r))}vDivide(e,a,r=0){let s=this.w,i=this.h/e,l=this.x,o=this.y;return new t(l+s*r/2,o+i*a+i*r/e,s*(1-r),i*(1-r))}margin(e,a){let r=this.w,s=this.h,i=this.x,l=this.y;return new t(i+r*e/2,l+s*a/2,r*(1-e),s*(1-a))}insetRect(e=0){let t=this.w,a=this.h;if(t===a)return this.margin(e,e);if(t>a){let r=a/t;return this.margin(e*r,e)}if(t<a){let r=t/a;return this.margin(e,e*r)}}insetSquare(e=0){let t=this.w,a=this.h;if(t===a)return this.margin(e,e);if(t>a){let r=a/t;return this.margin(1-r,0).margin(e,e)}if(t<a){let r=t/a;return this.margin(0,1-r).margin(e,e)}}fromLeft(e){return new t(this.x,this.y,this.w*e,this.h)}fromRight(e){return new t(this.x+this.w*(1-e),this.y,this.w*e,this.h)}preview(e,t="paleblue"){e.save(),e.beginPath(),e.fillStyle=t,e.rect(this.x,this.y,this.w,this.h),e.fill(),e.restore()}draw(e){e.save(),e.beginPath(),e.rect(this.x,this.y,this.w,this.h),e.stroke(),e.restore()}}drawCircle=function(e,t,a,r){e.beginPath(),e.arc(t,a,r,0,2*Math.PI),e.stroke()},drawNgon=function(e,t,a,r,s){let i=(s-2)*Math.PI/2,l=Math.cos(i/s),o=Math.sin(i/s);e.moveTo(t+r*l,a+r*o);for(var n=1;n<=s;n++)l=Math.cos((i+2*n*Math.PI)/s),o=Math.sin((i+2*n*Math.PI)/s),e.lineTo(t+r*l,a+r*o)},drawSquare=function(e,t,a,r){e.save(),e.translate(t-r/2,a-3*r/4),e.beginPath(),e.moveTo(0,0),e.lineTo(r,0),e.lineTo(r,r),e.lineTo(0,r),e.lineTo(0,0),e.fill(),e.restore()},drawTriangle=function(e,t,a,r){e.save(),e.translate(t-r/2,a-3*r/4),e.beginPath(),e.moveTo(r/2,0),e.lineTo(r,r),e.lineTo(0,r),e.lineTo(r/2,0),e.fill(),e.restore()},drawX=function(e,t,a,r){e.save();let s=r/2;e.beginPath(),e.moveTo(t-s,a-s),e.lineTo(t+s,a+s),e.moveTo(t+s,a-s),e.lineTo(t-s,a+s),e.lineWidth=2.5,e.stroke(),e.restore()},drawComplexValueCartesian=function(e,t,a,r,s,i){e.save();let l=t.x+t.w/2+.5*a*t.w,o=t.y-1*r*(t.h/2)+t.h/2;drawShape=function(){"circle"===s?e.arc(l,o,10,0,2*Math.PI):"triangle"===s?drawNgon(e,l,o,12,3):"square"===s?drawNgon(e,l,o,12,4):"pentagon"===s?drawNgon(e,l,o,12,5):"hexagon"===s?drawNgon(e,l,o,12,6):"X"===s&&drawX(e,l,o,16)},null!=i&&(e.beginPath(),e.fillStyle=i,drawShape(),e.fill()),e.beginPath(),drawShape(),e.stroke(),e.restore()},drawComplexValuePolar=function(e,t,a,r,s,i){var l=a*Math.cos(2*Math.PI*r),o=a*Math.sin(2*Math.PI*r);drawComplexValueCartesian(e,t,l,o,s,i)},drawZero=function(e,t,a,r,s){e.save();let i=t/2+.5*Math.cos(2*Math.PI*r)*t,l=-1*Math.sin(2*Math.PI*r)*(a/2)+a/2;null!=s&&(e.beginPath(),e.fillStyle=s,e.arc(i,l,10,0,2*Math.PI),e.fill()),e.beginPath(),e.arc(i,l,10,0,2*Math.PI),e.stroke(),e.restore()},drawVTicks=function(e,t,a,r,s,i,l){e.save(),nTicks=(i-s)/l,tickSpan=r/nTicks,e.textAlign="center",e.textBaseline="middle";for(let r=0;r<Math.round(nTicks+1);r++){e.beginPath(),e.moveTo(t,a+tickSpan*r),e.lineTo(t+5,a+tickSpan*r),e.stroke();var o=-Math.round(100*(s+l*r))/100;e.fillText(o,t-15,a+tickSpan*r)}e.restore()},drawHTicks=function(e,t,a,r,s,i,l){nTicks=(i-s)/l;nTicks;Math.floor(nTicks),tickSpan=r/nTicks,e.textAlign="center";for(let r=0;r<Math.round(nTicks+1);r++){e.beginPath(),e.moveTo(t+tickSpan*r,a),e.lineTo(t+tickSpan*r,a+5),e.stroke();var o=Math.round(100*(s+l*r))/100;e.fillText(o,t+tickSpan*r,a+15)}},drawRealAxes=function(e,t,a){let r=t.x,s=t.y,i=t.w,l=t.h;start=a.start,stop=a.stop,step=a.step,e.save(),e.translate(r,s),e.beginPath(),e.moveTo(0,l/2),e.lineTo(i,l/2),e.stroke(),drawHTicks(e,0,l/2,i,start,stop,step),e.restore()},drawBasicAxes=function(e,t,a){e.save(),e.beginPath(),e.moveTo(0,a/2),e.lineTo(t,a/2),e.stroke(),e.beginPath(),e.moveTo(t/2,0),e.lineTo(t/2,a),e.stroke(),drawHTicks(e,0,a/2,t,-1,1,.2),drawVTicks(e,t/2,0,a,-1,1,.2),drawCircle(e,t/2,a/2,t/2),e.restore()},drawPolarAxes=function(e,t,a){let r=t.x,s=t.y,i=t.w,l=t.h;start=a.start,stop=a.stop,step=a.step,e.save(),e.beginPath(),e.moveTo(r,s+l/2),e.lineTo(r+i,s+l/2),e.stroke(),e.beginPath(),e.moveTo(r+i/2,s),e.lineTo(r+i/2,s+l),e.stroke(),drawHTicks(e,r,s+l/2,i,start,stop,step),drawVTicks(e,r+i/2,s,l,start,stop,step),drawCircle(e,r+i/2,s+l/2,i/2),e.restore()},drawHGrid=function(e,t,a,r,s){let i=t.x,l=t.y,o=t.w,n=t.h;e.save(),e.strokeStyle="lightgrey",nTicks=(r-a)/s,tickSpan=n/nTicks;for(let t=0;t<Math.round(nTicks+1);t++)e.beginPath(),e.moveTo(i,l+tickSpan*t),e.lineTo(i+o,l+tickSpan*t),e.stroke();e.restore()},drawVGrid=function(e,t,a,r,s){let i=t.x,l=t.y,o=t.w,n=t.h;e.save(),e.strokeStyle="lightgrey",nTicks=(r-a)/s,tickSpan=o/nTicks;for(let t=0;t<Math.round(nTicks+1);t++)e.beginPath(),e.moveTo(i+tickSpan*t,l),e.lineTo(i+tickSpan*t,l+n),e.stroke();e.restore()},drawAxes=function(e,t,a){let r=t.x,s=t.y,i=t.w,l=t.h;start=a.start,stop=a.stop,step=a.step,drawHTicks(e,r,s+l,i,start,stop,step),drawVTicks(e,r,s,l,start,stop,step),drawHGrid(e,t,start,stop,step),drawVGrid(e,t,start,stop,step),e.beginPath(),e.rect(r,s,i,l),e.stroke()},drawFrequencyResponseAxes=function(e,t){let a=t.x,r=t.y,s=t.w,i=t.h;e.save(),e.translate(0,i/2),e.beginPath(),e.moveTo(a,r),e.lineTo(a+s,r),e.stroke(),drawHTicks(e,a,r,s,-Math.PI,Math.PI,2*Math.PI/8),e.beginPath(),e.moveTo(a+s/2,r-i/4),e.lineTo(a+s/2,r+3*i/4),e.stroke(),e.restore()},drawWedge=function(e,t,a,r){let s=t.x,i=t.y,l=t.w,o=t.h;e.save(),e.translate(s,i),e.beginPath(),e.fillStyle="#D3D3D3",e.moveTo(l/2,o/2),e.arc(l/2,o/2,l/2,2*-a*Math.PI,2*-r*Math.PI),e.fill(),e.restore()},drawSineSum=function(e,t,a,r,s){var i=64;let l=s.x,o=s.y,n=s.w,h=s.h;e.beginPath();for(let s=0;s<64;s++){let c=s/1;var d=2-(Math.cos(2*r*Math.PI*(c-32)/i)+Math.cos(2*Math.PI*t+2*r*Math.PI*(c-32-a)/i));e.lineTo(l+n*c/i,.25*h*d+o)}e.stroke()},drawSine=function(e,t,a,r,s){let i=s.x,l=s.y,o=s.w,n=s.h;e.beginPath();for(let s=0;s<64;s++){let d=s/1;var h=1-Math.cos(2*Math.PI*t+2*r*Math.PI*(d-32-a)/64);e.lineTo(i+o*d/64,.5*n*h+l)}e.stroke()},drawImpulseResponseAxes=function(e,t,a){let r=t.x,s=t.y,i=t.w,l=t.h;e.beginPath();e.moveTo(r-20,s+l/2),e.lineTo(r+i,s+l/2),e.stroke(),drawHTicks(e,r,s+l/2,i,0,a,1),drawVTicks(e,r-20,s,l,-1,1,.5),e.beginPath(),e.moveTo(r-20,s),e.lineTo(r-20,s+l),e.stroke()},drawImpulseResponse=function(e,t,a,r){let s=t.x,i=t.y,l=t.w,o=t.h;e.save();let n=l/a;for(let t=0;t<Math.round(a);t++){let a=r.at(t)||0;e.lineWidth=2,e.beginPath(),e.moveTo(s+n*t,i+o/2),e.lineTo(s+n*t,i-a*(o/2)+o/2),e.stroke(),e.lineWidth=1,drawCircle(e,s+n*t,i-a*(o/2)+o/2,5)}e.restore()};class a{draw(e,a,r,s){e.clearRect(0,0,r,s);let i=[];for(let e=-4;e<4;e++)i.push(Math.cos(2*Math.PI*e*a[0]));let l=new t(r/16,s/16,r-r/8,s-s/8);drawImpulseResponseAxes(e,l,8),drawImpulseResponse(e,l,8,i),drawSine(e,0,0,8*a[0],l)}reset(){}update(e){}}class r{constructor(e){this.sweepType=e,this.phase=0,this.offset=0,this.frequency=0}draw(e,a,r,s){e.save(),"time"===this.sweepType?(this.phase=a[0],this.offset=0,this.frequency=2):(this.phase=0,this.offset=a[0],this.frequency=32*a[1]);let i=new t(0,0,r,s),l={start:-1,stop:1,step:.5},o=i.vDivide(4,0,.25),n=i.vDivide(4,1,.25),h=i.vDivide(2,1,.25);e.clearRect(0,0,r,s),drawAxes(e,o,l),drawAxes(e,n,l),drawAxes(e,h,{start:-2,stop:2,step:.5}),e.lineWidth=1.5,drawSine(e,0,0,this.frequency,o),drawSine(e,this.phase,this.offset,this.frequency,n),drawSineSum(e,this.phase,this.offset,this.frequency,h),e.restore()}reset(){this.phase=0,this.offset=0,this.frequency=0}}class s{constructor(e="cartesian"){this.geometry=e}draw(e,a,r,s){e.clearRect(0,0,r,s);let i,l,o=new t(0,0,r,s).insetSquare(.125);"polar"===this.geometry?(i=Math.round(a[0]*Math.cos(2*Math.PI*a[1])*100)/100,l=Math.round(a[0]*Math.sin(2*Math.PI*a[1])*100)/100):(i=a[0],l=a[1]),e.save(),drawPolarAxes(e,o,{start:-1,stop:1,step:.2}),drawComplexValueCartesian(e,o,i,l,"circle",null);let n=new t(0,0,r,s).hDivide(4,3).vDivide(3,0);e.font="24px sans-serif",e.textAlign="left",e.textBaseline="center",e.fillText("Value: "+i+" + "+l+"i",n.x,n.y+n.h/2),e.restore()}reset(){}}class i{phase=0;draw(a,r,s,i){let l=r[0],o=new t(0,0,s,i).hDivide(2,0).insetSquare(.25),n=new t(0,0,s,i).hDivide(2,1).insetSquare(.25);a.save(),a.clearRect(0,0,s,i),drawWedge(a,o,l,0),drawWedge(a,n,this.phase+l,this.phase),drawPolarAxes(a,o,{start:-1,stop:1,step:.2}),drawPolarAxes(a,n,{start:-1,stop:1,step:.2}),drawComplexValuePolar(a,o,1,l,"circle"),drawComplexValuePolar(a,n,1,this.phase+l,"circle",e[0]),drawComplexValuePolar(a,n,1,this.phase,"square",e[1]);let h=new t(0,0,s,i).vDivide(4,0).hDivide(3,1).insetRect(.5);a.font="16px sans-serif",a.textAlign="left",a.textBaseline="center",a.fillText("Current sample:",h.x+16,h.y+h.h/2+5),drawComplexValuePolar(a,h.hDivide(2,1),0,0,"square",e[1]),a.font="24px sans-serif",a.fillText("Frequency",s/6,i/16),a.fillText("Phase",.7*s,i/16),a.restore()}reset(){this.phase=0}update(e){this.phase+=e[0]}}class l{draw(a,r,s,i){a.clearRect(0,0,s,i);let l=new t(0,0,s,i).insetSquare(.125);drawPolarAxes(a,l,{start:-1,stop:1,step:.2});let o=Math.round(100*Math.cos(2*Math.PI*r[0]))/100,n=Math.round(100*Math.sin(2*Math.PI*r[0]))/100;drawComplexValueCartesian(a,l,o,n,"circle",e[0]),drawComplexValueCartesian(a,l,o,-n,"circle",e[4]),drawComplexValueCartesian(a,l,o,0,"circle",e[3])}reset(){}}class o{constructor(e,t){this.operation=e,this.geometry=t}draw(a,r,s,i){let l,o,n,h,d=new t(0,0,s,i),c={start:-1,stop:1,step:.5},p=d.hDivide(3,0).insetSquare(.25),w=d.hDivide(3,1).insetSquare(.25),u=d.hDivide(3,2).insetSquare(.25);"polar"===this.geometry?(l=Math.round(r[0]*Math.cos(2*Math.PI*r[1])*100)/100,o=Math.round(r[0]*Math.sin(2*Math.PI*r[1])*100)/100,n=Math.round(r[2]*Math.cos(2*Math.PI*r[3])*100)/100,h=Math.round(r[2]*Math.sin(2*Math.PI*r[3])*100)/100):(l=r[0],o=r[1],n=r[2],h=r[3]),a.save(),a.clearRect(0,0,s,i),drawPolarAxes(a,p,c),drawComplexValueCartesian(a,p,l,o,"circle",e[0]),drawPolarAxes(a,w,c),drawComplexValueCartesian(a,w,n,h,"circle",e[1]),drawPolarAxes(a,u,c);var x=0,m=0;"add"===this.operation?(x=l+n,m=o+h,drawComplexValueCartesian(a,u,x,m,"circle",e[2])):(x=l*n-o*h,m=l*h+o*n,drawComplexValueCartesian(a,u,x,m,"circle",e[2])),x=Math.round(100*x)/100,m=Math.round(100*m)/100;let f=d.hDivide(3,0).vDivide(4,0,.5),P=d.hDivide(3,1).vDivide(4,0,.5),v=d.hDivide(3,2).vDivide(4,0,.5);a.font="16px sans-serif",a.textAlign="left",a.textBaseline="middle",a.fillText("Value 1: "+l+" + "+o+"i",f.x,f.y+f.h/2),a.fillText("Value 2: "+n+" + "+h+"i",P.x,P.y+P.h/2),a.fillText("Result: "+x+" + "+m+"i",v.x,v.y+v.h/2),a.restore(),a.font="24px sans-serif",a.textAlign="center",a.textBaseline="middle";let M="add"===this.operation?"+":"X";a.fillText(M,(p.x+p.w+w.x)/2,(p.y+p.h+w.y)/2),a.fillText("=",(w.x+w.w+u.x)/2,(w.y+w.h+u.y)/2)}reset(){this.phase=0}update(e){let t=e[0];this.phase+=t}}function n(t,a,r,s=!1){t.save(),w=a.w,h=a.h;w;let i=r[0],l=r[1],o=r[2],n=Math.pow(l,2)-4*i*o;drawPolarAxes(t,a,{start:-1,stop:1,step:.5});var d="circle";s&&(d="X");var c,p,u,x;n>=0?(n=Math.sqrt(n),c=(-l+n)/(2*i),p=(-l-n)/(2*i),u=0,x=0):(n=Math.sqrt(-n),c=-l/(2*i),p=-l/(2*i),u=n/(2*i),x=-n/(2*i)),drawComplexValueCartesian(t,a,c,u,d,e[0]),drawComplexValueCartesian(t,a,p,x,d,e[0]),t.restore()}class d{phase=0;constructor(e=!1){this.poles=e}draw(e,a,r,s){let i,l,o,h,d,c,p=new t(0,0,r,s).insetSquare(.25);e.clearRect(0,0,r,s),"poles"===this.poles?(i=a[0],l=a[1],o=a[2]):"zeros"===this.poles?(h=a[0],d=a[1],c=a[2]):"both"===this.poles&&(h=a[0],d=a[1],c=a[2],i=a[3],l=a[4],o=a[5]),"poles"===this.poles||"both"===this.poles?n(e,p,a,!0):n(e,p,a,!1),e.save();e.font="24px sans-serif",e.textAlign="left",e.textBaseline="middle","poles"===this.poles||"both"===this.poles?(e.fillText("a\u2080: "+i,r/5,3*s/8),e.fillText("a\u2081: "+l,r/5,s/2),e.fillText("a\u2082: "+o,r/5,5*s/8)):(e.fillText("b\u2080: "+h,3*r/4,3*s/8),e.fillText("b\u2081: "+d,3*r/4,s/2),e.fillText("b\u2082: "+c,3*r/4,5*s/8)),e.restore()}reset(){this.phase=0}update(e){let t=e[0];this.phase+=t}}class c{draw(e,a,r,s){e.clearRect(0,0,r,s);let i=new t(0,0,r,s).vDivide(2,1).margin(.125,0);drawFrequencyResponseAxes(e,i),this.draw2ndOrderResponse(e,i,a[0],a[1],a[2]),n(e,new t(0,0,r,s).hDivide(2,1).vDivide(2,0).insetSquare(.1),a);let l=new t(0,0,r,s).hDivide(2,0).vDivide(2,0).insetRect(.25);var o=a;drawImpulseResponseAxes(e,l,6),drawImpulseResponse(e,l,6,o),e.save(),e.font="20px sans-serif",e.textAlign="left",e.textBaseline="middle";const h=" x\u2099\u208b\u2081",d=" x\u2099\u208b\u2082";var c="y\u2099 = ";0===a[0]?c+=0:c+=a[0]+" x\u2099",0===a[1]?c+=" + 0":a[1]>0?c+=" + "+a[1]+h:c+=" - "+Math.abs(a[1])+h,0===a[2]?c+=" + 0":a[2]>0?c+=" + "+a[2]+d:c+=" - "+Math.abs(a[2])+d,e.fillText(c,50,200),e.save();e.translate(7*r/8,s/4),e.fillText("b\u2080: "+a[0],0,-s/8),e.fillText("b\u2081: "+a[1],0,0),e.fillText("b\u2082: "+a[2],0,s/8),e.restore()}draw1stOrderResponse=function(e,t,a,r){let s=t.x,i=t.y,l=t.w,o=t.h;var n=400;e.save(),e.lineWidth=2,e.beginPath();for(let t=-200;t<200;t++){let h=Math.pow(a+r*Math.cos(-2*Math.PI*t/n),2),d=Math.pow(r*Math.sin(-2*Math.PI*t/n),2);let c=.02*-(20*Math.log10(Math.sqrt(h+d)));e.lineTo(s+l*(t+200)/n,i+o*c+o/2)}e.stroke(),e.restore()};draw2ndOrderResponse=function(e,t,a,r,s){let i=t.x,l=t.y,o=t.w,n=t.h;var h=400;e.save(),e.lineWidth=2,e.beginPath();for(let t=-200;t<200;t++){let d=Math.pow(a+r*Math.cos(-2*Math.PI*t/h)+s*Math.cos(-4*Math.PI*t/h),2),c=Math.pow(r*Math.sin(-2*Math.PI*t/h)+s*Math.sin(-4*Math.PI*t/h),2);let p=.02*-(20*Math.log10(Math.sqrt(d+c)));e.lineTo(i+o*(t+200)/h,l+n*p+n/2)}e.stroke(),e.restore()};reset(){}update(e){}}class p{getNumRoots(e){return e===Math.floor(e)?1+e:Math.ceil(e)-(1-Math.floor(e)%2)}draw(e,a,r,s){e.clearRect(0,0,r,s);let i=a[0],l=new t(0,0,r,s).insetSquare(.25);drawPolarAxes(e,l,{start:-1,stop:1,step:.2});let o=this.getNumRoots(i);if(1===o){drawComplexValuePolar(e,l,1,1/(2*i)+1/i,"circle")}for(let t=-Math.floor(o/2);t<Math.floor(o/2);t++){drawComplexValuePolar(e,l,1,1/(2*i)+t/i,"circle")}e.fillText(o,16,16)}}class u{draw(e,a,r,s){let i=a[0];e.clearRect(0,0,r,s);let l=new t(0,-s/4,r,s).insetRect(.125);drawFrequencyResponseAxes(e,l),this.drawInverseCombFrequencyResponse(e,l,i)}drawInverseCombFrequencyResponse=function(e,t,a){var r=400;let s=t.x,i=t.y,l=t.w,o=t.h;e.save(),e.lineWidth=2,e.beginPath();for(let t=-200;t<200;t++){const n=20*Math.log10(2);let h=Math.pow(1+Math.cos(-2*Math.PI*a*t/r),2),d=Math.pow(Math.sin(-2*Math.PI*a*t/r),2);let c=.05*-(20*Math.log10(Math.sqrt(h+d))-n);e.lineTo(s+l*(t+200)/r,i+o*c+o/2)}e.stroke(),e.restore()}}class x{constructor(e,t,a){var r=t.map(e=>document.getElementById(e));const s=document.getElementById(e+"Canvas");var i=document.getElementById(e+"Span"),l=document.getElementById(e+"Step"),o=document.getElementById(e+"Reset");const n=s.getContext("2d");var h=s.width,d=s.height,c=r.map(e=>e.value),p=()=>{let e=r.map(e=>Number(e.value));null!==i&&(i.innerHTML=e[0]),n.save(),a.draw(n,e,h,d),n.restore()};null!==l&&l.addEventListener("click",function(){a.update(r.map(e=>Number(e.value))),p()}),o.addEventListener("click",function(){var e=0;for(const t of r)t.value=c[e++];a.reset(),p()});for(const e of r)e.oninput=function(){p()};p()}}document.addEventListener("DOMContentLoaded",e=>{new x("SineSample",["SineSampleSlider"],new a),new x("SineSumSweepTime",["SineSumSweepTimeSlider"],new r("time")),new x("SineSumSweepFrequency",["SineSumSweepFrequencySlider1","SineSumSweepFrequencySlider2"],new r("frequency")),new x("NSampleDelay",["NSampleDelaySlider"],new u),new x("ComplexPlane",["ComplexPlaneSlider1","ComplexPlaneSlider2"],new s),new x("ComplexSumCartesian",["ComplexSumCartesianSlider1","ComplexSumCartesianSlider2","ComplexSumCartesianSlider3","ComplexSumCartesianSlider4"],new o("add")),new x("ComplexProductCartesian",["ComplexProductCartesianSlider1","ComplexProductCartesianSlider2","ComplexProductCartesianSlider3","ComplexProductCartesianSlider4"],new o("multiply")),new x("ComplexValuesPolar",["ComplexValuesPolarSlider1","ComplexValuesPolarSlider2"],new s("polar")),new x("ComplexProductPolar",["ComplexProductPolarSlider1","ComplexProductPolarSlider2","ComplexProductPolarSlider3","ComplexProductPolarSlider4"],new o("multiply","polar")),new x("ComplexFrequency",["ComplexFrequencySlider"],new i),new x("CounterRotation",["CounterRotationSlider"],new l),new x("PoleZeroPlot",["PoleZeroPlotSlider1","PoleZeroPlotSlider2","PoleZeroPlotSlider3"],new d("zeros")),new x("InverseCombZeros",["InverseCombZerosSlider"],new p),new x("CombinedResponse",["CombinedResponseSlider1","CombinedResponseSlider2","CombinedResponseSlider3"],new c),new x("PolesPlot",["PolesPlotSlider1","PolesPlotSlider2","PolesPlotSlider3"],new d("poles"))});
+    </script>
+    <style>
+        ol{counter-reset:item}li:before{content:counters(item,".")" ";counter-increment:item}body{margin:auto;width:50%;text-align:left;padding:10px;background-color:#fff;font-family:Arial,sans-serif}.buttoncontainer,.slidercontainer{padding-left:0;padding-right:0;margin:auto;text-align:center}.buttoncontainer,li{display:block}.slidercontainer{display:flex}.slider,canvas{border-radius:25px}canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;border:4px dashed #b8b8b8}.slider{margin-left:15px;margin-right:15px;-webkit-appearance:none;width:80%;height:16px;background:#d3d3d3;opacity:.7;-webkit-transition:.2s;transition:opacity .2s}label{vertical-align:middle;display:inline-block;margin-bottom:1em}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;border:1px solid #000;height:25px;width:25px;border-radius:50%;background:#fff;cursor:pointer}input[type=range]::-moz-range-thumb{border:1px solid #000;height:25px;width:25px;border-radius:50%;background:#fff;cursor:pointer}footer{text-align:center;padding:3px;color:#708090}
+    </style>
+    <style>
+        @media print{*,:after,:before{background:0 0!important;color:#000!important;box-shadow:none!important;text-shadow:none!important}a,a:visited{text-decoration:underline}a[href]:after{content:" ("attr(href)")"}abbr[title]:after{content:" ("attr(title)")"}a[href^="#"]:after,a[href^="javascript:"]:after{content:""}blockquote,pre{border:1px solid #999}thead{display:table-header-group}blockquote,img,pre,tr{page-break-inside:avoid}img{max-width:100%!important}h2,h3,p{orphans:3;widows:3}h2,h3{page-break-after:avoid}}code,pre{font-family:Menlo,Monaco,"Courier New",monospace}pre{padding:.5rem;line-height:1.25;overflow-x:scroll}a,a:visited{color:#3498db}a:active,a:focus,a:hover{color:#2980b9}.modest-no-decoration{text-decoration:none}@media screen and (min-width:32rem) and (max-width:48rem){html{font-size:15px}}@media screen and (min-width:48rem){html{font-size:16px}}body{color:#444;font-family:"Open Sans Condensed",sans-serif;font-weight:300;margin:0 auto;max-width:48rem;line-height:1.45;padding:.25rem}.modest-p,p{font-size:1rem;margin-bottom:1.3rem}.modest-h1,.modest-h2,.modest-h3,.modest-h4,h1,h2,h3,h4{margin:1.414rem 0 .5rem;font-weight:inherit;line-height:1.42}.modest-h1,h1{margin-top:0;font-size:3.998rem}.modest-h2,h2{font-size:2.827rem}.modest-h3,h3{font-size:1.999rem}.modest-h4,h4{font-size:1.414rem}.modest-h5,h5{font-size:1.121rem}.modest-h6,h6{font-size:.88rem}.modest-small,small{font-size:.707em}canvas,html,iframe,img,select,svg,textarea,video{max-width:100%}html{font-size:18px}h1,h2,h3,h4,h5,h6{font-family:Arimo,Helvetica,sans-serif}h1,h2,h3{border-bottom:2px solid #fafafa;margin-bottom:1.15rem;padding-bottom:.5rem;text-align:center}blockquote{border-left:8px solid #fafafa;padding:1rem}code,pre{background-color:#fafafa}
+    </style>
+    <title>ADC 25</title>
+</head>
+<body>
+
+<h1>Paper 2 Plugin</h1>
+
+<h2>Table of Contents</h2>
+<ol>
+    <li><a href="#SineSample">Sampling the Cosine</a></li>
+    <li><a href="#SineSumSweepTime">Adding two sine waves with delay (sweep time)</a></li>
+    <li><a href="#SineSumSweepFrequency">Adding two sine waves with delay (sweep frequency)</a></li>
+    <li><a href="#NSampleDelay">Frequency response of N-sample delay</a></li>
+    <li><a href="#ComplexPlane">Placing complex values in the plane</a></li>
+    <li><a href="#ComplexSumCartesian">Adding two complex values</a></li>
+    <li><a href="#ComplexProductCartesian">Multiplying two complex values</a></li>
+    <li><a href="#ComplexValuesPolar">Placing complex values with polar coordinates</a></li>
+    <li><a href="#ComplexProductPolar">Multiplying complex values with polar coordinates</a></li>
+    <li><a href="#ComplexFrequency">Complex values can represent frequency</a></li>
+    <li><a href="#CounterRotation">Positive & Negative imaginary parts cancel</a></li>
+    <li><a href="#PoleZeroPlot">Zeros of a filter</a></li>
+    <li><a href="#InverseCombZeros">Zeros of N-sample delay</a></li>
+    <li><a href="#CombinedResponse">Frequency Response of the Feed-Foward filter</a></li>
+    <li><a href="#PolesPlot">Poles of a filter</a></li>
+</ol>
+
+<div id="SineSample">
+    <h3>Sampling the Cosine</h3>
+</div>
+
+<canvas id="SineSampleCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="SineSampleReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="SineSampleSlider">Frequency</label>
+    <input type="range" min="0" max="1" value="0.0" step="0.01" class="slider" id="SineSampleSlider">
+</div>
+Frequency: <span id="SineSampleSpan"></span>
+
+<div id="SineSumSweepTime">
+    <h3>Adding two sine waves with delay (sweep time)</h3>
+</div>
+
+<canvas id="SineSumSweepTimeCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="SineSumSweepTimeReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="SineSumSweepTimeSlider">Phase Offset</label>
+    <input type="range" min="0" max="1" value="0.0" step="0.01" class="slider" id="SineSumSweepTimeSlider">
+</div>
+Phase offset (cycles): <span id="SineSumSweepTimeSpan"></span>
+
+<!--
+---
+--- SineSumSweepFrequency
+---
+-->
+<div id="SineSumSweepFrequency">
+    <h3>Adding two sine waves with delay (sweep frequency)</h3>
+</div>
+
+<canvas id="SineSumSweepFrequencyCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="SineSumSweepFrequencyReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="SineSumSweepFrequencySlider1">Time Offset (samples) </label>
+    <input type="range" min="0" max="4" value="0.0" step="0.1" class="slider" id="SineSumSweepFrequencySlider1">
+    <label for="SineSumSweepFrequencySlider2">Frequency</label>
+    <input type="range" min="0" max="1" value="0.1" step="0.01" class="slider" id="SineSumSweepFrequencySlider2">
+</div>
+Time Offset (samples): <span id="SineSumSweepFrequencySpan"></span>
+
+<div id="NSampleDelay">
+    <h3>Frequency response of N-sample delay</h3>
+</div>
+
+<canvas id="NSampleDelayCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="NSampleDelayReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="NSampleDelaySlider">Time Offset</label>
+    <input type="range" min="0" max="8" value="0.0" step="0.01" class="slider" id="NSampleDelaySlider">
+</div>
+Time Offset (samples): <span id="NSampleDelaySpan"></span>
+
+<div id="ComplexPlane">
+    <h3>Placing complex values in the plane</h3>
+</div>
+
+<canvas id="ComplexPlaneCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexPlaneReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexPlaneSlider1">Real Value </label>
+    <input type="range" min="-1" max="1" value="1.0" step="0.01" class="slider" id="ComplexPlaneSlider1">
+    <label for="ComplexPlaneSlider2">Imaginary Value</label>
+    <input type="range" min="-1" max="1" value="0.0" step="0.01" class="slider" id="ComplexPlaneSlider2">
+</div>
+
+<div id="ComplexSumCartesian">
+    <h3>Adding two complex values</h3>
+</div>
+
+<canvas id="ComplexSumCartesianCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexSumCartesianReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexSumCartesianSlider1">Real 1</label>
+    <input type="range" min="-1" max="1" value="0.0" step="0.01" class="slider" id="ComplexSumCartesianSlider1">
+    <label for="ComplexSumCartesianSlider2">Imaginary 1</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexSumCartesianSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="ComplexSumCartesianSlider3">Real 2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexSumCartesianSlider3">
+    <label for="ComplexSumCartesianSlider4">Imaginary 2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexSumCartesianSlider4">
+</div>
+
+<div id="ComplexProductCartesian">
+    <h3>Multiplying two complex values</h3>
+</div>
+
+<canvas id="ComplexProductCartesianCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexProductCartesianReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexProductCartesianSlider1">Real 1</label>
+    <input type="range" min="-1" max="1" value="0.0" step="0.01" class="slider" id="ComplexProductCartesianSlider1">
+    <label for="ComplexProductCartesianSlider2">Imaginary 1</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexProductCartesianSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="ComplexProductCartesianSlider3">Real 2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexProductCartesianSlider3">
+    <label for="ComplexProductCartesianSlider4">Imaginary 2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="ComplexProductCartesianSlider4">
+</div>
+
+<div id="ComplexValuesPolar">
+    <h3>Placing complex values with polar coordinates</h3>
+</div>
+
+<canvas id="ComplexValuesPolarCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexValuesPolarReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexValuesPolarSlider1">Magnitude </label>
+    <input type="range" min="0" max="1" value="1.0" step="0.01" class="slider" id="ComplexValuesPolarSlider1">
+    <label for="ComplexValuesPolarSlider2">Phase </label>
+    <input type="range" min="0" max="1" value="0.0" step="0.01" class="slider" id="ComplexValuesPolarSlider2">
+</div>
+
+<div id="ComplexProductPolar">
+    <h3>Multiplying complex values with polar coordinates</h3>
+</div>
+
+<canvas id="ComplexProductPolarCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexProductPolarReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexProductPolarSlider1">Magnitude 1</label>
+    <input type="range" min="0" max="1" value="0.0" step="0.01" class="slider" id="ComplexProductPolarSlider1">
+    <label for="ComplexProductPolarSlider2">Phase 1</label>
+    <input type="range" min="0" max="1" value="0" step="0.01" class="slider" id="ComplexProductPolarSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="ComplexProductPolarSlider3">Magnitude 2</label>
+    <input type="range" min="0" max="1" value="0" step="0.01" class="slider" id="ComplexProductPolarSlider3">
+    <label for="ComplexProductPolarSlider4">Phase 2</label>
+    <input type="range" min="0" max="1" value="0" step="0.01" class="slider" id="ComplexProductPolarSlider4">
+</div>
+
+<div id="ComplexFrequency">
+    <h3>Complex values can represent frequency</h3>
+</div>
+
+<canvas id="ComplexFrequencyCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="ComplexFrequencyReset"> Reset </button>
+    <button type="button" id="ComplexFrequencyStep"> Step </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="ComplexFrequencySlider">Time Offset</label>
+    <input type="range" min="0" max="1.0" value="0.0" step="0.01" class="slider" id="ComplexFrequencySlider">
+</div>
+Frequency / 2&#960 : <span id="ComplexFrequencySpan"></span>
+
+<div id="CounterRotation">
+    <h3>Positive & Negative imaginary parts cancel</h3>
+</div>
+
+<canvas id="CounterRotationCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="CounterRotationReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="CounterRotationSlider">Phase</label>
+    <input type="range" min="0" max="1" value="0.0" step="0.01" class="slider" id="CounterRotationSlider">
+</div>
+
+<div id="PoleZeroPlot">
+    <h3>Zeros of a filter</h3>
+</div>
+
+<canvas id="PoleZeroPlotCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="PoleZeroPlotReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="PoleZeroPlotSlider1">b0</label>
+    <input type="range" min="-1" max="1" value="1.0" step="0.01" class="slider" id="PoleZeroPlotSlider1">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="PoleZeroPlotSlider2">b1</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="PoleZeroPlotSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="PoleZeroPlotSlider3">b2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="PoleZeroPlotSlider3">
+</div>
+
+<div id="InverseCombZeros">
+    <h3>Zeros of the N-sample delay</h3>
+</div>
+
+<canvas id="InverseCombZerosCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="InverseCombZerosReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="InverseCombZerosSlider">Delay (samples)</label>
+    <input type="range" min="0" max="16" value="1.00" step="0.01" class="slider" id="InverseCombZerosSlider">
+</div>
+Delay (samples): <span id="InverseCombZerosSpan"></span>
+
+
+<div id="CombinedResponse">
+    <h3>Frequency Response of the Feed-Foward filter</h3>
+</div>
+
+<canvas id="CombinedResponseCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="CombinedResponseReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="CombinedResponseSlider1">b0</label>
+    <input type="range" min="-1" max="1" value="1.0" step="0.01" class="slider" id="CombinedResponseSlider1">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="CombinedResponseSlider2">b1</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="CombinedResponseSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="CombinedResponseSlider3">b2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="CombinedResponseSlider3">
+</div>
+
+<div id="PolesPlot">
+    <h3>Poles of a filter</h3>
+</div>
+
+<canvas id="PolesPlotCanvas" width="800" height="400">
+    Sorry, your browser does not support canvas.
+</canvas>
+
+<div class="buttoncontainer">
+    <button type="button" id="PolesPlotReset"> Reset </button>
+</div>
+
+<div class="slidercontainer">
+    <label for="PolesPlotSlider1">b0</label>
+    <input type="range" min="-1" max="1" value="1.0" step="0.01" class="slider" id="PolesPlotSlider1">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="PolesPlotSlider2">b1</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="PolesPlotSlider2">
+</div>
+<p></p>
+<div class="slidercontainer">
+    <label for="PolesPlotSlider3">b2</label>
+    <input type="range" min="-1" max="1" value="0" step="0.01" class="slider" id="PolesPlotSlider3">
+</div>
+</body>
+<footer>
+    <p>The CSS theme used on this page is <a href="https://github.com/markdowncss/modest/tree/master">modest.css</a> </p>
+</footer>
+</html>
